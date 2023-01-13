@@ -3,7 +3,16 @@ import { expect } from "chai";
 import { GameRunner } from "../src/game-runner";
 mocha();
 
-const approvalConfig = {};
+const approvalConfig = {
+  EOL: require("os").EOL,
+  appendEOL: true,
+  failOnLineEndingDifferences: false,
+  normalizeLineEndingsTo: "\n",
+  reporters: [
+    "gitdiff",
+  ],
+  stripBOM: true,
+};
 
 describe("whole game", () => {
 
