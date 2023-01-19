@@ -1,7 +1,7 @@
 import { Game } from './game';
 
 export class GameRunner {
-  public static main(random): void {
+  public static main(random: () => number): void {
     const game = new Game();
     game.addPlayer('Chet');
     game.addPlayer('Pat');

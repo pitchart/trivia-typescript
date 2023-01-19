@@ -1,7 +1,7 @@
-import { categoryArray, numberOfCategories } from "./category";
+import {categoryArray, numberOfCategories} from "./category";
+import {Player} from "./player";
 
 export class Game {
-  private players: string[] = [];
 
   private places: number[] = [];
 
@@ -14,18 +14,19 @@ export class Game {
   private isGettingOutOfPenaltyBox = false;
 
   private questions = new Map<string, string[]>();
+  private players: Player[] = [];
 
   constructor() {
     categoryArray.forEach((category) => {
       this.questions.set(category, []);
       for (let i = 0; i < 50; i++) {
-        this.questions.get(category).push(`${category} Question ${i}`);
+        this.questions.get(category)?.push(`${category} Question ${i}`);
       }
     });
   }
 
   public addPlayer(name: string): boolean {
-    this.players.push(name);
+    this.players.push(new Player(name));
     this.places[this.howManyPlayers() - 1] = 0;
     this.purses[this.howManyPlayers() - 1] = 0;
     this.inPenaltyBox[this.howManyPlayers() - 1] = false;
@@ -37,13 +38,13 @@ export class Game {
   }
 
   public roll(roll: number) {
-    console.log(`${this.players[this.currentPlayer]} is the current player`);
+    console.log(`${this.players[this.currentPlayer].name} is the current player`);
     console.log(`They have rolled a ${roll}`);
 
     if (this.isStayingPenaltyBox(roll)) {
       console.log(
         `${
-          this.players[this.currentPlayer]
+          this.players[this.currentPlayer].name
         } is not getting out of the penalty box`
       );
       this.isGettingOutOfPenaltyBox = false;
@@ -53,13 +54,13 @@ export class Game {
     if (this.isLeavingPenaltyBox(roll)) {
       this.isGettingOutOfPenaltyBox = true;
       console.log(
-        `${this.players[this.currentPlayer]} is getting out of the penalty box`
+        `${this.players[this.currentPlayer].name} is getting out of the penalty box`
       );
     }
 
     this.movePlayer(roll);
     console.log(
-      `${this.players[this.currentPlayer]}'s new location is ${
+      `${this.players[this.currentPlayer].name}'s new location is ${
         this.places[this.currentPlayer]
       }`
     );
@@ -91,7 +92,7 @@ export class Game {
   public wrongAnswer(): boolean {
     console.log("Question was incorrectly answered");
     console.log(
-      `${this.players[this.currentPlayer]} was sent to the penalty box`
+      `${this.players[this.currentPlayer].name} was sent to the penalty box`
     );
     this.inPenaltyBox[this.currentPlayer] = true;
 
@@ -119,7 +120,7 @@ export class Game {
   private playerScores() {
     this.purses[this.currentPlayer] += 1;
     console.log(
-      `${this.players[this.currentPlayer]} now has ${
+      `${this.players[this.currentPlayer].name} now has ${
         this.purses[this.currentPlayer]
       } Gold Coins.`
     );
@@ -137,7 +138,7 @@ export class Game {
   }
 
   private askQuestion(): void {
-    console.log(this.questions.get(this.currentCategory()).shift());
+    console.log(this.questions.get(this.currentCategory())?.shift());
   }
 
   private currentCategory(): string {
