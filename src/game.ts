@@ -1,4 +1,4 @@
-import { categoryArray, numberOfCategories } from './category';
+import { categoryArray, numberOfCategories } from "./category";
 
 export class Game {
   private players: string[] = [];
@@ -40,27 +40,39 @@ export class Game {
     console.log(`${this.players[this.currentPlayer]} is the current player`);
     console.log(`They have rolled a ${roll}`);
 
-    if (this.inPenaltyBox[this.currentPlayer]) {
-      if (this.rollIsOdd(roll)) {
-        this.isGettingOutOfPenaltyBox = true;
-
-        console.log(`${this.players[this.currentPlayer]} is getting out of the penalty box`);
-        this.movePlayer(roll);
-
-        console.log(`${this.players[this.currentPlayer]}'s new location is ${this.places[this.currentPlayer]}`);
-        console.log(`The category is ${this.currentCategory()}`);
-        this.askQuestion();
-      } else {
-        console.log(`${this.players[this.currentPlayer]} is not getting out of the penalty box`);
-        this.isGettingOutOfPenaltyBox = false;
-      }
-    } else {
-      this.movePlayer(roll);
-
-      console.log(`${this.players[this.currentPlayer]}'s new location is ${this.places[this.currentPlayer]}`);
-      console.log(`The category is ${this.currentCategory()}`);
-      this.askQuestion();
+    if (this.isStayingPenaltyBox(roll)) {
+      console.log(
+        `${
+          this.players[this.currentPlayer]
+        } is not getting out of the penalty box`
+      );
+      this.isGettingOutOfPenaltyBox = false;
+      return;
     }
+
+    if (this.isLeavingPenaltyBox(roll)) {
+      this.isGettingOutOfPenaltyBox = true;
+      console.log(
+        `${this.players[this.currentPlayer]} is getting out of the penalty box`
+      );
+    }
+
+    this.movePlayer(roll);
+    console.log(
+      `${this.players[this.currentPlayer]}'s new location is ${
+        this.places[this.currentPlayer]
+      }`
+    );
+    console.log(`The category is ${this.currentCategory()}`);
+    this.askQuestion();
+  }
+
+  private isLeavingPenaltyBox(roll: number) {
+    return this.inPenaltyBox[this.currentPlayer] && this.rollIsOdd(roll);
+  }
+
+  private isStayingPenaltyBox(roll: number) {
+    return this.inPenaltyBox[this.currentPlayer] && !this.rollIsOdd(roll);
   }
 
   private rollIsOdd(roll: number) {
@@ -77,8 +89,10 @@ export class Game {
   }
 
   public wrongAnswer(): boolean {
-    console.log('Question was incorrectly answered');
-    console.log(`${this.players[this.currentPlayer]} was sent to the penalty box`);
+    console.log("Question was incorrectly answered");
+    console.log(
+      `${this.players[this.currentPlayer]} was sent to the penalty box`
+    );
     this.inPenaltyBox[this.currentPlayer] = true;
 
     this.nextPlayer();
@@ -86,33 +100,29 @@ export class Game {
   }
 
   public wasCorrectlyAnswered(): boolean {
-    if (this.inPenaltyBox[this.currentPlayer]) {
-      if (this.isGettingOutOfPenaltyBox) {
-        console.log('Answer was correct!!!!');
-        this.purses[this.currentPlayer] += 1;
-        console.log(`${this.players[this.currentPlayer]} now has ${
-            this.purses[this.currentPlayer]} Gold Coins.`);
+    let winner = true;
+    if (
+      !this.inPenaltyBox[this.currentPlayer] ||
+      this.isGettingOutOfPenaltyBox
+    ) {
+      console.log("Answer was correct!!!!");
+      this.playerScores();
 
-        const winner = this.didPlayerWin();
-        this.nextPlayer();
-
-        return winner;
-      }
-      this.nextPlayer();
-      return true;
+      winner = this.didPlayerWin();
     }
-
-    console.log('Answer was correct!!!!');
-
-    this.purses[this.currentPlayer] += 1;
-    console.log(`${this.players[this.currentPlayer]} now has ${
-        this.purses[this.currentPlayer]} Gold Coins.`);
-
-    const winner = this.didPlayerWin();
 
     this.nextPlayer();
 
     return winner;
+  }
+
+  private playerScores() {
+    this.purses[this.currentPlayer] += 1;
+    console.log(
+      `${this.players[this.currentPlayer]} now has ${
+        this.purses[this.currentPlayer]
+      } Gold Coins.`
+    );
   }
 
   private nextPlayer() {

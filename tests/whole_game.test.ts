@@ -21,7 +21,7 @@ describe("whole game", () => {
   let originalConsoleLog: (message: any) => void;
 
   function gameConsoleLog(msg: string) {
-    gameConsoleOutput += msg + "\r\n";
+    gameConsoleOutput += msg + "\n";
   }
 
   beforeEach(() => {
