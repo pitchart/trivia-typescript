@@ -1,4 +1,4 @@
-import Category, { categoryArray, numberOfCategories } from './category';
+import { categoryArray, numberOfCategories } from './category';
 
 export class Game {
   private players: string[] = [];
