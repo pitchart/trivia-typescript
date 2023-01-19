@@ -1,12 +1,9 @@
 {
-    "defaultSeverity": "error",
-    "extends": [
-        "tslint:latest"
-    ],
-    "jsRules": {},
-    "rules": {
-        "no-console": false,
-        "no-implicit-dependencies": false
-    },
-    "rulesDirectory": []
+    "include": ["**/*", "**/.*"],
+    "compilerOptions": {
+        "target": "es5",
+        "module": "commonjs",
+        "strict": true,
+        "esModuleInterop": true
+    }
 }
